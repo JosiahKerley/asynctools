@@ -102,6 +102,7 @@ client                handler
     while True:
       payload = {}
       payload['id'] = self.id
+      payload['name'] = self.name
       payload['host'] = self.socket.gethostname()
       self.data.set('instance::%s'%(self.id),payload,self.keepalive)
       self.time.sleep(self.poll)
