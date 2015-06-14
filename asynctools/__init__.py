@@ -1,5 +1,6 @@
 ## General Purpose Low Level Redis Interface
 class Data:
+  import time
   import redis
   import cPickle as pickle
   from multiprocessing import Process
@@ -24,11 +25,13 @@ class Data:
     sig = ''
     last = None
     while True:
-      sig = '%s%s%s'%(self.host,self.port,self.channel)
+      sig = 'redis://%s:%s/%s'%(self.host,self.port,self.channel)
+      print sig
       if self.r == None or not sig == last:
         print('Not connected to data backend')
         self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
       last = sig
+      self.time.sleep(3)
 
   ## Key/Val
   def set(self,key,value,expire=False):
