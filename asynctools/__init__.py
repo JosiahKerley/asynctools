@@ -76,9 +76,14 @@ client                handler
   keepalive = 30
   namespace = 'default'
   name = None
+  host = 
   verbose = True
-  def warmup(self):
+  def __init__(self):
+    data = Data()
+    self.host = data.host
+    del data
     self.id = str(self.uuid.uuid1())
+  def warmup(self):
     self.data = Data()
     self.data.namespace = self.namespace
   def test(self):
