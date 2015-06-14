@@ -76,7 +76,7 @@ client                handler
   keepalive = 30
   namespace = 'default'
   name = None
-  host = 
+  host = None
   verbose = True
   def __init__(self):
     data = Data()
