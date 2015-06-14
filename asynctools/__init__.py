@@ -104,6 +104,7 @@ client                handler
   def warmup(self):
     self.data = Data()
     self.data.namespace = self.namespace
+    self.data.host = self.host
   def test(self):
     k = self.uuid.uuid4()
     v = self.uuid.uuid4()
