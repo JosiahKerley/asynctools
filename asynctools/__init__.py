@@ -105,7 +105,7 @@ client                handler
     self.data = Data()
     self.data.namespace = self.namespace
     self.data.host = self.host
-    self.data.__init_()
+    self.data.__init__()
   def test(self):
     k = self.uuid.uuid4()
     v = self.uuid.uuid4()
