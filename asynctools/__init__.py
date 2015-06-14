@@ -19,21 +19,7 @@ class Data:
   ## Constructor
   def __init__(self):
     self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
-    #connection = self.threading.Thread(target=self.connectionManager)
-    #connection.start()
 
-  ## Manages connection with data backend
-  def connectionManager(self):
-    sig = ''
-    last = None
-    while self.running:
-      sig = 'redis://%s:%s/%s'%(self.host,self.port,self.channel)
-      print sig
-      if self.r == None or not sig == last:
-        print('Not connected to data backend')
-        self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
-      last = sig
-      self.time.sleep(3)
 
   ## Key/Val
   def set(self,key,value,expire=False):
@@ -96,17 +82,21 @@ client                handler
   name = None
   host = None
   verbose = True
+  warm = False
   def __init__(self):
     data = Data()
     self.host = data.host
     del data
     self.id = str(self.uuid.uuid1())
   def warmup(self):
-    self.data = Data()
-    self.data.namespace = self.namespace
-    self.data.host = self.host
-    self.data.__init__()
+    if not self.warm:
+      self.data = Data()
+      self.data.namespace = self.namespace
+      self.data.host = self.host
+      self.data.__init__()
+      self.warm = True
   def test(self):
+    self.warmup()
     k = self.uuid.uuid4()
     v = self.uuid.uuid4()
     self.data.set(k,v,5)
@@ -115,15 +105,18 @@ client                handler
     else:
       return(False)
   def scatter(self,name,message,user=False):
+    self.warmup()
     payload = {'message':message,'user':user}
     self.data.push('%s::scatter'%(name),payload)
   def gather(self,name):
+    self.warmup()
     message = None
     while message == None:
       message = self.data.pop('%s::callback'%(name))
       self.time.sleep(self.poll)
     return(message)    
   def block(self):
+    self.warmup()
     payload = None
     while payload == None:
       if not self.test():
@@ -132,8 +125,10 @@ client                handler
       self.time.sleep(self.poll)
     return(payload)
   def callback(self,payload):
+    self.warmup()
     return(self.data.push('%s::callback'%(self.name),payload))
   def heartbeat(self):
+    self.warmup()
     while True:
       payload = {}
       payload['id'] = self.id
@@ -142,6 +137,7 @@ client                handler
       self.data.set('instance::%s'%(self.id),payload,self.keepalive)
       self.time.sleep(self.poll)
   def listRelays(self):
+    self.warmup()
     instances = []
     for i in self.data.list('instance::*'):
       instances.append(self.data.get('%s'%(i)))
