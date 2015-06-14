@@ -81,6 +81,14 @@ client                handler
     self.id = str(self.uuid.uuid1())
     self.data = Data()
     self.data.namespace = self.namespace
+  def test(self):
+    k = uuid.uuid4()
+    v = uuid.uuid4()
+    self.data.set(k,v,5)
+    if self.data.set(k) == v:
+      return(True)
+    else:
+      return(False)
   def scatter(self,name,message,user=False):
     payload = {'message':message,'user':user}
     self.data.push('%s::scatter'%(name),payload)
@@ -93,6 +101,8 @@ client                handler
   def block(self):
     payload = None
     while payload == None:
+      if not self.test():
+        print('Cannot communicate with data backend!')
       payload = self.data.pop('%s::scatter'%(self.name))
       self.time.sleep(self.poll)
     return(payload)
