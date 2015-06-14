@@ -77,7 +77,7 @@ client                handler
   namespace = 'default'
   name = None
   verbose = True
-  def __init__(self):
+  def warmup(self):
     self.id = str(self.uuid.uuid1())
     self.data = Data()
     self.data.namespace = self.namespace
@@ -122,6 +122,7 @@ client                handler
       instances.append(self.data.get('%s'%(i)))
     return(instances)
   def run(self,handler):
+    self.warmup()
     heartbeat = self.Process(target=self.heartbeat)
     heartbeat.start()
     while True:
