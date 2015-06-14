@@ -82,8 +82,8 @@ client                handler
     self.data = Data()
     self.data.namespace = self.namespace
   def test(self):
-    k = uuid.uuid4()
-    v = uuid.uuid4()
+    k = self.uuid.uuid4()
+    v = self.uuid.uuid4()
     self.data.set(k,v,5)
     if self.data.set(k) == v:
       return(True)
