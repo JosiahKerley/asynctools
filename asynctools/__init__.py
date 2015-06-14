@@ -18,12 +18,12 @@ class Data:
 
   ## Constructor
   def __init__(self):
-    connection = self.threading.Thread(target=self.connectionManager)
-    connection.start()
+    self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
+    #connection = self.threading.Thread(target=self.connectionManager)
+    #connection.start()
 
   ## Manages connection with data backend
   def connectionManager(self):
-    self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
     sig = ''
     last = None
     while self.running:
@@ -105,6 +105,7 @@ client                handler
     self.data = Data()
     self.data.namespace = self.namespace
     self.data.host = self.host
+    self.data.__init_()
   def test(self):
     k = self.uuid.uuid4()
     v = self.uuid.uuid4()
