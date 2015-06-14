@@ -85,7 +85,7 @@ client                handler
     k = self.uuid.uuid4()
     v = self.uuid.uuid4()
     self.data.set(k,v,5)
-    if self.data.set(k) == v:
+    if self.data.get(k) == v:
       return(True)
     else:
       return(False)
