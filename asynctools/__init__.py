@@ -3,7 +3,7 @@ class Data:
   import time
   import redis
   import cPickle as pickle
-  from multiprocessing import Process
+  import threading
 
 
   ## Settings
@@ -13,18 +13,19 @@ class Data:
   channel = 0
   coalesce = False
   namespace = 'default'
+  running = True
 
 
   ## Constructor
   def __init__(self):
-    connection = self.Process(target=self.connectionManager)
+    connection = threading.Thread(target=connectionManager)
     connection.start()
 
   ## Manages connection with data backend
   def connectionManager(self):
     sig = ''
     last = None
-    while True:
+    while self.running:
       sig = 'redis://%s:%s/%s'%(self.host,self.port,self.channel)
       print sig
       if self.r == None or not sig == last:
