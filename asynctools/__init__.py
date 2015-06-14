@@ -23,6 +23,7 @@ class Data:
 
   ## Manages connection with data backend
   def connectionManager(self):
+    self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
     sig = ''
     last = None
     while self.running:
