@@ -18,7 +18,7 @@ class Data:
 
   ## Constructor
   def __init__(self):
-    connection = threading.Thread(target=connectionManager)
+    connection = self.threading.Thread(target=connectionManager)
     connection.start()
 
   ## Manages connection with data backend
