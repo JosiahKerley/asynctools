@@ -2,9 +2,11 @@
 class Data:
   import redis
   import cPickle as pickle
+  from multiprocessing import Process
 
 
   ## Settings
+  r = None
   host = '127.0.0.1'
   port = 6379
   channel = 0
@@ -14,8 +16,19 @@ class Data:
 
   ## Constructor
   def __init__(self):
-    self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
+    connection = self.Process(target=self.connectionManager)
+    connection.start()
 
+  ## Manages connection with data backend
+  def connectionManager(self):
+    sig = ''
+    last = None
+    while True:
+      sig = '%s%s%s'%(self.host,self.port,self.channel)
+      if self.r == None or not sig == last:
+        print('Not connected to data backend')
+        self.r = self.redis.StrictRedis(host=self.host, port=self.port, db=self.channel)
+      last = sig
 
   ## Key/Val
   def set(self,key,value,expire=False):
